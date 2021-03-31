@@ -1,0 +1,22 @@
+{
+  "name": "trainder-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dnrecording/trainder-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dnrecording/trainder-api/issues"
+  },
+  "homepage": "https://github.com/dnrecording/trainder-api#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
