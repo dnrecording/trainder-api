@@ -1,5 +1,5 @@
 # trainder-api
-INIT \n
+INIT
 npm install
 
 SERVE
