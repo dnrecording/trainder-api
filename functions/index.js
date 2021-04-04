@@ -7,7 +7,7 @@ const bodyParser =require('body-parser');
 
 const cors = require('cors')
 
-const studentRoutes  = require('../routes/student-routes');
+const studentRoutes  = require('./routes/student-routes');
 
 var uid = "";
 
@@ -27,3 +27,5 @@ app.get("/", function (req, res) {
 });
 
 exports.api = functions.region("asia-east2").https.onRequest(app);
+
+

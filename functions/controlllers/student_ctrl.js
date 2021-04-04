@@ -1,5 +1,5 @@
 'use strict';
-const {admin} = require('../functions/db');
+const {admin} = require('../db');
 const Student = require('../models/student');
 const firestore = admin.firestore();
 
