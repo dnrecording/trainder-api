@@ -1,12 +1,12 @@
 'use strict';
-const {admin} = require('../db');
+const {admin} = require('../database');
 const Student = require('../models/student');
-const firestore = admin.firestore();
+const db = admin.firestore();
 
 const addStudent = async(req,res,next) =>{
     try{
         const data =req.body;
-        await firestore.collection('students').doc().set(data);
+        await db.collection('students').doc().set(data);
         res.send('Record saved successfully');
 
     }catch(error){
@@ -16,7 +16,7 @@ const addStudent = async(req,res,next) =>{
 }
 const getAllStudents = async(req,res,next)=>{
     try {
-        const students = await firestore.collection('students');
+        const students = await db.collection('students');
         const data = await students.get();
         const studentArray =  [];
         if(data.empty){
@@ -39,7 +39,7 @@ const getAllStudents = async(req,res,next)=>{
 const getStudent  = async(req,res,next)=>{
     try{
         const id = req.params.id;
-        const student = await firestore.collection('students').doc(id);
+        const student = await db.collection('students').doc(id);
         const data = await student.get();
         if(!data.exists){
             res.status(404).send('Student with the given ID not found');
@@ -56,7 +56,7 @@ const updateStudent = async(req,res,next) => {
     try {
         const id = req.params.id;
         const data = req.body;
-        const student = await firestore.collection('students').doc(id);
+        const student = await db.collection('students').doc(id);
         await student.update(data);
         res.send('Student record update successfully');
 
@@ -68,7 +68,7 @@ const updateStudent = async(req,res,next) => {
 const deleteStudent = async(req,res,next)=>{
     try {
         const id  = req.params.id;
-        await firestore.collection('students').doc(id).delete();
+        await db.collection('students').doc(id).delete();
         res.send('Record deleted successfully ');
 
     }catch(error){
