@@ -1,8 +1,6 @@
-// const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-// 
-// admin.initializeApp(functions.config().firebase);
-var firebaseConfig = {
+var admin = require("firebase-admin");
+
+var serviceAccount = {
     "type": "service_account",
     "project_id": "fir-b9dbd",
     "private_key_id": "0a15b9601074def9bafb28ce629a00a62533c1c1",
@@ -13,8 +11,12 @@ var firebaseConfig = {
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-tyg97%40fir-b9dbd.iam.gserviceaccount.com"
-};
-admin.initializeApp(firebaseConfig)
+}
 
-// module.exports = {admin , functions}
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://fir-b9dbd-default-rtdb.firebaseio.com"
+});
+
 module.exports = { admin }
