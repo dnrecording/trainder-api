@@ -7,7 +7,7 @@ var io = require("socket.io")(http, {
     cors: {
         // origin: "https://webrtc-test-8bef3.web.app",
         // origin: "http://localhost:8080",
-        orgin: "https://trainder.evera.cloud",
+        origin: "https://trainder.evera.cloud",
         methods: ["GET", "POST"],
         credentials: true,
     },
