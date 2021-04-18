@@ -55,7 +55,9 @@ const getStudent  = async(req,res,next)=>{
 const updateStudent = async(req,res,next) => {
     try {
         const id = req.params.id;
-        const data = req.body;
+        const data = {
+            "Put Edit" : []
+        }
         const student = await db.collection('students').doc(id);
         await student.update(data);
         res.send('Student record update successfully');
