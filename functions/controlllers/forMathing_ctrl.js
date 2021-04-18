@@ -17,7 +17,7 @@ function findPaired(ref, list) {
     let tempList = [...list]
     let maxId = null;
     
-   console.table(tempList);
+ 
 
     let refBd = ref.birth_day.split('-'); // BirthDay
 
