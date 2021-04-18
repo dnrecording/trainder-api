@@ -63,47 +63,6 @@ function findPaired(ref, list) {
 
 
 
-const getAllM_user = async(req, res, next) => {
-    try {
-        const users = await db.collection('userData');
-        const data = await users.get();
-        const User_Array = [];
-        if (data.empty) {
-            res.status(404).send('userData collection on database is empty');
-
-        } else {
-
-            data.forEach(doc => {
-                //const user = new M_user(doc.id,doc.data().EC_skill,doc.data().Purpose,calAge(doc.data().Birhtday));
-                const user = new M_user(doc.id, doc.data().EC_skill, doc.data().Purpose, doc.data().Birthday);
-                User_Array.push(user);
-            })
-            console.table(User_Array);
-            res.send(User_Array);
-
-        }
-
-    } catch (error) {
-        res.status(400).send(error.message);
-    }
-}
-const getM_user = async(req, res, next) => {
-    try {
-        const id = req.params.id;
-        const user = await db.collection('userData').doc(id);
-        const data = await user.get();
-        if (!data.exists) {
-            res.status(404).send('user with the given ID not found');
-
-        } else {
-            //console.log(data.data().EC_skill);
-            res.send(data.data());
-
-        }
-    } catch (error) {
-        res.status(400).send(error.message)
-    }
-}
 
 const Match = async(req, res, next) => {
     console.log('------------------------------------------');
@@ -242,8 +201,7 @@ const dequeue = async(req, res, next) => {
 }
 module.exports = {
 
-    getAllM_user,
-    getM_user,
+   
     Match,
     pushToQ,
     dequeue

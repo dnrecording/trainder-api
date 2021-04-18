@@ -3,9 +3,8 @@ const {getAllM_user, getM_user, dequeue,Match,pushToQ} = require('../controlller
 
 const router  = express.Router()
 
-
 router.get('/Match',Match)
-router.get('/pushQ/:id',pushToQ)
+router.get('/pushQ',pushToQ)
 router.delete('/dequeue/:id',dequeue)
 module.exports = {
     routs : router
