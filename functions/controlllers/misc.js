@@ -1,14 +1,10 @@
 "use strict";
 // const { MAX_TIMEOUT_SECONDS } = require('firebase-functions');
 // const { ref } = require('firebase-functions/lib/providers/database');
-const {
-    admin
-} = require("../database");
+const { admin } = require("../database");
 const M_user = require("../models/forMatching");
 const Paired = require("../models/Paired");
-const {
-    io
-} = require("../websocket")
+const { io } = require("../websocket");
 
 const db = admin.firestore();
 
@@ -23,23 +19,6 @@ const makeid = function(length) {
         );
     }
     return result.join("");
-}
+};
 
-const pushtoQ = async function(uid) {
-    try {
-        const id = uid;
-        const user = await db.collection("userData").doc(id);
-        const data = await user.get();
-
-        if (!data.exists) {
-            return
-        } else {
-            await db.collection("WaitForMatch").doc(id).set(data.data());
-            return data.data()
-        }
-    } catch (error) {
-        return error.message;
-    }
-}
-
-module.exports = { makeid, pushtoQ }
+module.exports = { makeid };

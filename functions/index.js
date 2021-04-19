@@ -7,7 +7,7 @@ const cors = require("cors");
 const M_userRoutes = require("./routes/forMathing-routes");
 const studentRoutes = require("./routes/student-routes");
 const { ResultStorage } = require("firebase-functions/lib/providers/testLab");
-const { pushtoQ } = require("./controlllers/misc");
+const { pushToQ } = require("./controlllers/forMathing_ctrl");
 //const { getAllM_user } = require('./controlllers/forMathing_ctrl.js');
 
 var corsOptions = {
@@ -45,7 +45,7 @@ io.on("connection", function(socket) {
             delete sessionClient[Existed];
         }
         sessionClient[socket.id] = {...data, room: "" };
-        pushtoQ(data.uid);
+        pushToQ(data.uid);
         socket.emit("connected", socket.id);
     });
 
