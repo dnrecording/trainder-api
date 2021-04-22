@@ -49,11 +49,33 @@ io.on("connection", function(socket) {
         socket.emit("connected", socket.id);
     });
 
+    socket.on("deliver-info-custom", (data) => {
+        // remove existed user
+        if (!data) return;
+        console.log(`info delivered from ${socket.id} : `);
+        console.log(data);
+        // check by uid
+        let Existed = Object.keys(sessionClient).find(
+            (id) => sessionClient[id].uid == data.uid
+        );
+        if (Existed) {
+            delete sessionClient[Existed];
+        }
+        sessionClient[socket.id] = {...data, room: "" };
+        socket.emit("connected", socket.id);
+    });
+
     // chat
-    socket.on("chat message", (room, msg) => {
+    socket.on("chat message", (room, msg, date) => {
         console.log("socket by : ", socket.id, "to : " + room + " message: " + msg);
         // ส่งข้อมูลกลับไปหาผู้ส่งมา
-        io.in(room).emit("chat messaged", socket.id, sessionClient[socket.id], msg);
+        io.in(room).emit(
+            "chat messaged",
+            socket.id,
+            sessionClient[socket.id],
+            msg,
+            date
+        );
     });
 
     // vdo_call
