@@ -109,8 +109,10 @@ const Match = async function() {
 
             // update that these user ever met each other.
             // it works two way.
-
-            let ref_met = [...ref.ever_met, ref_pair];
+            let ref_met  = []
+             
+            ref_met = [...ref.ever_met];
+            if(!ref_met.find(ele => ele == ref_pair)) { ref_met= [...ref_met,ref_pair]}
 
             let met = {
                 ever_met: ref_met,
@@ -124,6 +126,7 @@ const Match = async function() {
             if (ref_pair_data.data().ever_met == null) {
                 var met2_list = [ref.id];
             } else {
+                if(!met2_list.find(ele => ele == ref.id))
                 var met2_list = [...ref_pair_data.data().ever_met, ref.id];
             }
             let met2 = {
@@ -160,6 +163,7 @@ const Match = async function() {
 };
 
 const pushToQ = async(id) => {
+    console.log('pushing')
     //get dataform userData and Post into WaitForMatch collection
     const user = await db.collection("userData").doc(id);
     const data = await user.get();
