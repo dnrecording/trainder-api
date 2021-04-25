@@ -52,7 +52,7 @@ const addFriend = async (person1_id,person2_id) => {
 
 
 };
-const getAllFriend = async(myId) =>{
+const getAllFriend_id = async(myId) =>{
     console.log('Almost')
     const user = await db.collection('userData').doc(myId);
     console.log('good')
@@ -104,4 +104,33 @@ const removeFriend = async (person1_id,person2_id) => {
 
 
 };
-module.exports = { addFriend ,getAllFriend,removeFriend};
+const getFriends_name = async (myId)=>{
+    
+    const user = await db.collection('userData').doc(myId);
+   
+    const data = await user.get();
+    if(!data.exists){
+        console.log('There no Friend in list')
+
+    }else {
+        var friends_name = []
+        var  friends_id = data.data().friendList
+        
+        for (const friend_id of friends_id){
+            try{const myFriend = await db.collection('userData').doc(friend_id)
+            const myFriend_data = await myFriend.get()
+            console.log(myFriend_data.data().fullName)
+            friends_name.push(myFriend_data.data().fullName)
+            console.log(friends_name)
+            }catch(error){
+                console.log('your freind deleted the account')
+            }
+        }
+        
+        
+        return friends_name
+
+    }
+
+}
+module.exports = { addFriend ,getAllFriend_id,removeFriend,getFriends_name};
