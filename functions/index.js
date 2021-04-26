@@ -1,24 +1,15 @@
-"use strict";
 const { admin } = require("./database.js");
-const express = require("express");
-const app = express();
-const http = require("http").Server(app);
-var io = require("socket.io")(http, {
-    cors: {
-        // origin: "https://webrtc-test-8bef3.web.app",
-        origin: "http://localhost:8080",
-        // origin: "https://trainder.evera.cloud",
-        methods: ["GET", "POST"],
-        credentials: true,
-    },
-    // origins: "*:*"
-});
+const { express, app, http, io } = require("./websocket.js");
+
 const bodyParser = require("body-parser");
 
 const cors = require("cors");
 const M_userRoutes = require("./routes/forMathing-routes");
 const studentRoutes = require("./routes/student-routes");
+const FriendListRoutes = require('./routes/FriendList-routes');
+const CourseRoutes = require('./routes/course-routes');
 const { ResultStorage } = require("firebase-functions/lib/providers/testLab");
+const { pushToQ } = require("./controlllers/forMathing_ctrl");
 //const { getAllM_user } = require('./controlllers/forMathing_ctrl.js');
 
 var corsOptions = {
@@ -31,11 +22,12 @@ app.use(express.json());
 
 app.use("", studentRoutes.routs);
 app.use("", M_userRoutes.routs);
-
+app.use("",FriendListRoutes.routs);
+app.use("",CourseRoutes.routs);
 app.get("/", function(req, res) {
     console.log("roots page");
 
-    res.send("Hello Matha Fucker");
+    res.send("Trainder Api Right Here.");
 });
 
 var sessionClient = {};
@@ -56,6 +48,7 @@ io.on("connection", function(socket) {
             delete sessionClient[Existed];
         }
         sessionClient[socket.id] = {...data, room: "" };
+        pushToQ(data.uid);
         socket.emit("connected", socket.id);
     });
 
@@ -88,7 +81,7 @@ io.on("connection", function(socket) {
             socket.id,
             sessionClient[socket.id]
         );
-        delete sessionClient[socket.id]
+        delete sessionClient[socket.id];
     });
 
     socket.on("leave-room", (name) => {
