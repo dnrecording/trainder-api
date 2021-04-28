@@ -1,13 +1,24 @@
-const { admin } = require("./database.js");
-const { express, app, http, io } = require("./websocket.js");
+const {
+    admin
+} = require("./database.js");
+const {
+    express,
+    app,
+    http,
+    io
+} = require("./websocket.js");
 
 const bodyParser = require("body-parser");
 
 const cors = require("cors");
 const M_userRoutes = require("./routes/forMathing-routes");
 const studentRoutes = require("./routes/student-routes");
-const { ResultStorage } = require("firebase-functions/lib/providers/testLab");
-const { pushToQ } = require("./controlllers/forMathing_ctrl");
+const {
+    ResultStorage
+} = require("firebase-functions/lib/providers/testLab");
+const {
+    pushToQ
+} = require("./controlllers/forMathing_ctrl");
 //const { getAllM_user } = require('./controlllers/forMathing_ctrl.js');
 
 var corsOptions = {
@@ -44,7 +55,10 @@ io.on("connection", function(socket) {
         if (Existed) {
             delete sessionClient[Existed];
         }
-        sessionClient[socket.id] = {...data, room: "" };
+        sessionClient[socket.id] = {
+            ...data,
+            room: ""
+        };
         pushToQ(data.uid);
         socket.emit("connected", socket.id);
     });
@@ -61,7 +75,10 @@ io.on("connection", function(socket) {
         if (Existed) {
             delete sessionClient[Existed];
         }
-        sessionClient[socket.id] = {...data, room: "" };
+        sessionClient[socket.id] = {
+            ...data,
+            room: ""
+        };
         socket.emit("connected", socket.id);
     });
 
@@ -95,12 +112,15 @@ io.on("connection", function(socket) {
 
     socket.on("disconnect", () => {
         console.log(`user ${socket.id} disconnected`);
-        io.to(sessionClient[socket.id].room).emit(
-            "user-leaved-room",
-            socket.id,
-            sessionClient[socket.id]
-        );
-        delete sessionClient[socket.id];
+        if (sessionClient[socket.id]) {
+            io.to(sessionClient[socket.id].room).emit(
+                "user-leaved-room",
+                socket.id,
+                sessionClient[socket.id]
+            );
+
+            delete sessionClient[socket.id];
+        }
     });
 
     socket.on("leave-room", (name) => {
