@@ -11,6 +11,7 @@ const router = express.Router()
 
 router.get('/Match', async(req, res, next) => {
     try {
+        console.log('Mathcing.....')
         let matched = await Match();
         res.status(200).send(matched);
     } catch (error) {
