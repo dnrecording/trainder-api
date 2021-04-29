@@ -1,7 +1,7 @@
 'use strict';
 const { admin } = require('../database');
 const { Course, myEvent } = require('../models/Course');
-const Student = require('../models/student')
+
 const db = admin.firestore();
 // addCoures and addEvent_toCourse just a prototype
 const addCourse = async (creator_id) => {
@@ -52,12 +52,10 @@ const addEvent_toCourse = async (CourseId, uid) => {
     let Events = [...arr]
 
 
-    //console.log('Pass get Event')
-    // console.table(Events)
     const course = await db.collection('Course').doc(CourseId)
-    //console.log('Before')
+   
     const data = await course.get()
-    // console.log(data.data())
+
 
     if (data.data().events == null) {
         console.log('It is empty')
@@ -72,8 +70,7 @@ const addEvent_toCourse = async (CourseId, uid) => {
         list.push(...Events)
     }
 
-    //console.table(list)
-    //console.log('above')
+    
     const courseEvent = course.collection("Event")
     var i = 0
     for (const event of list) {
@@ -137,32 +134,6 @@ const addEvent_toUser = async (courseId,uid) => {
     }
 
 
-
-
-   
-    
-    
-   
-    
-
-    
-    
-    
-    console.log('Fuck UId')
-    // for (const event of Events) {
-        
-    //     await userEvents.doc(event.id).set({
-    //         id: event.id,
-    //         name: event.name,
-    //         creator: event.creator,
-    //         start: event.start,
-    //         end: event.end,
-    //         color: event.color,
-    //         details: event.details
-
-    //     })
-        
-    // }
 
 
 
