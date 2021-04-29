@@ -30,6 +30,12 @@ router.get('/getLogByUID/:myId_FriendUID', async (req, res, next) => {
 })
 router.post('/saveLog',async(req,res,next)=>{
     try{
+        /*{            
+            "sender": "BdB1sFR5JxLA6Ov7FfvY",
+            "reciever": "BLw6bcWzPXvYoNjiZkJA",
+            "msg": "So cool Bro",
+            "date": "1923-12-12"
+            }*/
         console.log("Routes")
         console.log(req.body)
         data  = await saveLog(req.body.sender,req.body.reciever,req.body.msg,req.body.date)
