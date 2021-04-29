@@ -56,11 +56,11 @@ router.get('/addMember/:courseId/:userId', async(req, res, next) => {
         res.status(400).send(error);
     }
 })
-router.get('/joinCourse/:courseId/:userId', async(req, res, next) => {
+router.post('/joinCourse', async(req, res, next) => {
     //caution : uid base on Film
     try {
         console.log('Joining Course')
-        let result = await joinCourse(req.params.courseId,req.params.userId)
+        let result = await joinCourse(req.body.courseId,req.body.userId)
         res.send(result)
     } catch (error) {
         res.status(400).send(error);

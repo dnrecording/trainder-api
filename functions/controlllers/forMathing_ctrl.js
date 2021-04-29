@@ -1,5 +1,6 @@
 "use strict";
 const e = require("express");
+const { _topicWithOptions } = require("firebase-functions/lib/providers/pubsub");
 // const { MAX_TIMEOUT_SECONDS } = require('firebase-functions');
 // const { ref } = require('firebase-functions/lib/providers/database');
 const {
@@ -49,7 +50,7 @@ function findPaired(ref, list) {
             score += 0.25;
         }
         if (ref.ever_met.find((element) => element == head.id)) {
-            score -= 2;
+            score -= 15;
         }
         if (score > nowmax) {
             nowmax = score;
@@ -60,7 +61,7 @@ function findPaired(ref, list) {
     return maxId;
 }
 
-const Match = async function() {
+const Match = async function () {
     console.log("------------------------------------------");
     console.log("Matching");
     var paired_arr = [];
@@ -109,10 +110,10 @@ const Match = async function() {
 
             // update that these user ever met each other.
             // it works two way.
-            let ref_met  = []
-             
+            let ref_met = []
+
             ref_met = [...ref.ever_met];
-            if(!ref_met.find(ele => ele == ref_pair)) { ref_met= [...ref_met,ref_pair]}
+            if (!ref_met.find(ele => ele == ref_pair)) { ref_met = [...ref_met, ref_pair] }
 
             let met = {
                 ever_met: ref_met,
@@ -126,8 +127,8 @@ const Match = async function() {
             if (ref_pair_data.data().ever_met == null) {
                 var met2_list = [ref.id];
             } else {
-                if(!met2_list.find(ele => ele == ref.id))
-                var met2_list = [...ref_pair_data.data().ever_met, ref.id];
+                if (!met2_list.find(ele => ele == ref.id))
+                    var met2_list = [...ref_pair_data.data().ever_met, ref.id];
             }
             let met2 = {
                 ever_met: met2_list,
@@ -162,7 +163,7 @@ const Match = async function() {
     }
 };
 
-const pushToQ = async(id) => {
+const pushToQ = async (id) => {
     console.log('pushing')
     //get dataform userData and Post into WaitForMatch collection
     const user = await db.collection("userData").doc(id);
@@ -181,21 +182,117 @@ const pushToQ = async(id) => {
     }
 };
 
-const dequeue = async(req, res, next) => {
-    //delete this use when user get paired or user get out
-    try {
-        const id = req.params.id;
-        await db.collection("WaitForMatch").doc(id).delete();
-        res.send("Record deleted successfully ");
-    } catch (error) {
-        res.status(400).send(error.message);
+
+const findTrainer = async (userId) => {
+
+    let trainers = await getAllTrainers()
+
+    let top10 = []
+    const user = await db.collection("userData").doc(userId).get()
+    //console.log('All trainers')
+    //console.table(trainers)
+    let met_trainer = []
+    if (user.data().met_trainer != null)
+        met_trainer.push(...user.data().met_trainer)
+
+    let ref = new M_user(user.id,
+        user.data().EC_skill,
+        user.data().Purpose,
+        user.data().Birthday,
+        met_trainer)
+
+    console.log('Finding Trainer ')
+
+    while(top10.length <10) {
+        console.log('...')
+        let trainerId = findPaired(ref, trainers)
+
+        if (!met_trainer.find(ele => ele == trainerId)){
+            met_trainer.push(trainerId)
+            
+        }
+        let uid = userIdtoUID(trainerId)
+        if(!top10.find(ele => ele == uid)){
+        top10.push(await userIdtoUID(trainerId))
+        //console.log(trainerId,await userIdtoUID(trainerId))
+        }
+            
+
+        
+        for (let j = 0; j < trainers.length; j++) {
+            if (trainers[j].id == trainerId)
+                trainers.splice(j, 1)
+            //remove who get in queue
+        }
     }
-};
+    //console.table(met_trainer)
+
+    console.log('Top 10 ')
+    console.table(top10)
+    await db.collection("userData").doc(userId).update({ met_trainer: met_trainer })
+    return top10
+
+
+}
+const userIdtoUID = async (userId) => {
+    const user = await db.collection("userData").doc(userId)
+    const data = await user.get()
+    if(data.data().uid==null|| data.data().uid == undefined)
+        console.log('Something Wrong')
+    return data.data().uid
+}
+
+const getAllTrainers = async () => {
+
+    let trainers = []
+    const user_D = await db.collection("userData");
+    const trainders = await user_D.where("role", "==", "trainer").get();
+
+
+    if (trainders.empty) {
+        console.log('There are no trainer ')
+        return null
+    }
+
+    trainders.forEach(trainer => {
+
+        // M_user class push
+        const user = new M_user(
+            trainer.id,
+            trainer.data().EC_skill,
+            trainer.data().Purpose,
+            trainer.data().Birthday
+
+        );
+        if (
+            user.genre == null ||
+            user.purpose == null ||
+            user.birth_day == null
+        ) {
+
+            console.log(
+                "Invalid  information for Trainer  form  Id :" + user.id
+            );
+        } else trainers.push(user);
+
+
+    });
+
+    return trainers
+
+
+
+}
+
+
+
+
+
 
 
 
 module.exports = {
     Match,
     pushToQ,
-    dequeue,
+    findTrainer
 };

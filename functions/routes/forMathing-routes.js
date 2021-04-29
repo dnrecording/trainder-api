@@ -4,7 +4,8 @@ const {
     getM_user,
     dequeue,
     Match,
-    pushToQ
+    pushToQ,
+    findTrainer
 } = require('../controlllers/forMathing_ctrl')
 
 const router = express.Router()
@@ -26,7 +27,17 @@ router.get('/pushQ/:id', async(req, res, next) => {
         res.status(400).send(error);
     }
 })
-router.delete('/dequeue/:id', dequeue)
+router.get('/findTrainer/:id', async(req, res, next) => {
+    try {
+        console.log('In Routes')
+        const data = await findTrainer(req.params.id);
+        res.status(200).send(data)
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+})
+
+
 module.exports = {
     routs: router,
     pushToQ
