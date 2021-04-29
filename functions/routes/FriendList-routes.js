@@ -23,7 +23,7 @@ router.get('/allFriend_id/:id' , async(req, res, next) => {
         res.status(400).send(error);
     }
 })
-router.put('/unFriend', async(req, res, next) => {
+router.delete('/unFriend', async(req, res, next) => {
     try {
         await removeFriend(req.body.id1,req.body.id2);
         
