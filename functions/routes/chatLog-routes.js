@@ -1,5 +1,5 @@
 const express = require('express');
-const { getLogByUID,getAllLogs } = require('../controlllers/chatLog_ctrl')
+const { getLogByUID,getAllLogs, saveLog } = require('../controlllers/chatLog_ctrl')
 
 const router = express.Router()
 
@@ -25,6 +25,17 @@ router.get('/getLogByUID/:myId_FriendUID', async (req, res, next) => {
         res.send(data)
 
     } catch (error) {
+        res.status(400).send(error.message)
+    }
+})
+router.post('/saveLog',async(req,res,next)=>{
+    try{
+        console.log("Routes")
+        console.log(req.body)
+        data  = await saveLog(req.body.sender,req.body.reciever,req.body.msg,req.body.date)
+        res.send(data)
+
+    }catch(error){
         res.status(400).send(error.message)
     }
 })
