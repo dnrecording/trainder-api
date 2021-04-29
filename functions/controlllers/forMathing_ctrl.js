@@ -201,9 +201,6 @@ const findTrainer = async (userId) => {
         user.data().Birthday,
         met_trainer)
 
-    let lenn = trainers.length
-    if (lenn > 10)
-        lenn = 10
     console.log('Finding Trainer ')
 
     while(top10.length <10) {
