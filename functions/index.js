@@ -8,6 +8,7 @@ const M_userRoutes = require("./routes/forMathing-routes");
 const studentRoutes = require("./routes/student-routes");
 const FriendListRoutes = require('./routes/FriendList-routes');
 const CourseRoutes = require('./routes/course-routes');
+const ChatRoutes = require('./routes/chatLog-routes');
 const { ResultStorage } = require("firebase-functions/lib/providers/testLab");
 const { pushToQ } = require("./controlllers/forMathing_ctrl");
 //const { getAllM_user } = require('./controlllers/forMathing_ctrl.js');
@@ -24,6 +25,7 @@ app.use("", studentRoutes.routs);
 app.use("", M_userRoutes.routs);
 app.use("",FriendListRoutes.routs);
 app.use("",CourseRoutes.routs);
+app.use("",ChatRoutes.routs);
 app.get("/", function(req, res) {
     console.log("roots page");
 

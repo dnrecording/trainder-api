@@ -55,8 +55,11 @@ const addFriend = async (person1_id, person2_id) => {
         // It will have collection("logs")
 
 
-    })
 
+    })
+    await db.collection("chat-logs").doc(log_id).collection("logs").doc("Dummy").set({
+        logModel : "Object"
+    })
 
 
 
