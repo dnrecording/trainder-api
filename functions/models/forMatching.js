@@ -1,6 +1,6 @@
 class M_user {
     // few datafields that use for matching
-    constructor(id,genre,purpose,birth_day,ever_met){
+    constructor(id,genre,purpose,birth_day,ever_met =[]){
         this.id = id 
         this.genre = genre
         this.purpose = purpose
