@@ -203,7 +203,7 @@ const findTrainer = async (userId) => {
 
     console.log('Finding Trainer ')
 
-    while(top10.length <10) {
+    while(top10.length <10 && top10.length < trainers.length) {
         console.log('...')
         let trainerId = findPaired(ref, trainers)
 
