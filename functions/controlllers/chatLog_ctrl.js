@@ -15,7 +15,7 @@ const getAllLogs = async (myId) => {
        
         DocRef = f.data().logs
         //console.log(DocRef)
-        const Logs = await db.collection("chat-logs").doc(DocRef).collection("Logs").get()
+        const Logs =  db.collection("chat-logs").doc(DocRef).collection("Logs").get()
 
         Logs.forEach(log => {
             if (log.data().msg != null) {

@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.get('/getAllLogs/:myId',async (req, res,next) =>{
     try {
-        data = await getAllLogs(req.params.myId)
+        data =  await getAllLogs(req.params.myId)
         res.send(data)
     }catch(error){
         res.status(400).send(error.message)
@@ -15,7 +15,7 @@ router.get('/getAllLogs/:myId',async (req, res,next) =>{
 router.get('/getLogByUID/:myId_FriendUID', async (req, res, next) => {
     
     try {
-        console.log('Before')
+       
         let tempString = req.params.myId_FriendUID
         const word = tempString.split('&')
         let myId = word[0]
