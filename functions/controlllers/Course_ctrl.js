@@ -43,10 +43,18 @@ const getEventsfromUser = async (uid) => {
 
     return Events;
 }
+const uidToUserId = async(uid) =>{
+    const user = await db.collection("userData").where("uid","==",uid).get()
+    var userId
+    user.forEach(doc=>{
+        userId = doc.id
+    })
+    return userId
+}
 const addEvent_toCourse = async (CourseId, uid) => {
     // copy even from userTable to Course events
     // cuation : uid base on Film
-
+  
 
     let arr = await getEventsfromUser(uid)
     let Events = [...arr]
@@ -106,6 +114,13 @@ const getEventsfromCourse = async (courseId) => {
 
 }
 const addEvent_toUser = async (courseId,uid) => {
+    let userId = await uidToUserId(uid)
+    
+    
+    if(await isTableCollision(courseId,userId)){
+        
+        return 'Collission can not merge table '
+    }
     // caution : uid base on Film
     let Events =  await getEventsfromCourse(courseId)    
     const Table = await db.collection("Table")
@@ -132,6 +147,7 @@ const addEvent_toUser = async (courseId,uid) => {
         })
 
     }
+    return 'Added successfully'
 
 
 
@@ -143,10 +159,10 @@ const isTableCollision  = async(courseId,userId) =>{
     let CourseEvents = await getEventsfromCourse(courseId)
     let UserEvents  = await getEventsfromUser(uid)
 
-    console.log('Course Table')
-    console.table(CourseEvents)
-    console.log('User table before Merge')
-    console.table(UserEvents)
+    // console.log('Course Table')
+    // console.table(CourseEvents)
+    // console.log('User table before Merge')
+    // console.table(UserEvents)
     if(UserEvents ==[] || CourseEvents==[]){
         
         return false
