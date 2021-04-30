@@ -26,11 +26,11 @@ router.get('/EventToCourse/:courseId/:uid', async(req, res, next) => {
         res.status(400).send(error);
     }
 })
-router.get('/EventToUser/:courseId/:uid', async(req, res, next) => {
+router.post('/EventToUser', async(req, res, next) => {
     //caution : uid base on Film
     try {
         console.log('Adding events to user table')
-        await addEvent_toUser(req.params.courseId,req.params.uid)
+        await addEvent_toUser(req.body.courseId,req.body.uid)
         res.send('Added successfullly')
     } catch (error) {
         res.status(400).send(error);
