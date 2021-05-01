@@ -6,7 +6,9 @@ const e = require("express");
 const {
     admin
 } = require("../database");
-const {makeid} =require("./misc")
+const {makeid} =require("./misc");
+const {Friend} = require("../models/Friends");
+
 const db = admin.firestore();
 
 
@@ -76,6 +78,16 @@ const getAllFriend_id = async (myId) => {
     return Friends_id
 
 };
+const getAllFriends = async (myId) => {
+    let Friends  = []
+    const FriendList = await db.collection("userData").doc(myId).collection("FriendList").get()
+    FriendList.forEach(friend=>{
+        if(friend.id != 'Dummy')
+        Friends.push(new Friend(friend.id,friend.data().name))
+    })
+    return Friends
+
+};
 const removeFriend = async (person1_id, person2_id) => {
    
     await db.collection("userData").doc(person1_id).collection("FriendList").doc(person2_id).delete()
@@ -94,4 +106,4 @@ const getFriends_name = async (myId) => {
     
 
 }
-module.exports = { addFriend, getAllFriend_id, removeFriend, getFriends_name };
+module.exports = { addFriend, getAllFriend_id, removeFriend, getFriends_name ,getAllFriends};

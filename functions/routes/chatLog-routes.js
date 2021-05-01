@@ -38,7 +38,7 @@ router.post('/saveLog',async(req,res,next)=>{
             }*/
         console.log("Routes")
         console.log(req.body)
-        data  = await saveLog(req.body.sender,req.body.reciever,req.body.msg,req.body.date)
+        data  = await saveLog(req.body.sender,req.body.msg,req.body.date)
         res.send(data)
 
     }catch(error){
