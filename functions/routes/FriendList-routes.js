@@ -1,6 +1,6 @@
 const express = require('express');
 const {
-    addFriend, getAllFriend_id,removeFriend ,getFriends_name
+    addFriend, getAllFriend_id,removeFriend ,getFriends_name,getAllFriends
 } = require('../controlllers/FriendList')
 
 const router = express.Router()
@@ -35,6 +35,16 @@ router.get('/allFriend_name/:id' , async(req, res, next) => {
     try {
         
         data = await getFriends_name(req.params.id)
+        res.send(data)
+        
+    } catch (error) {
+        res.status(400).send(error);
+    }
+}),
+router.get('/allFriends/:id' , async(req, res, next) => {
+    try {
+        
+        data = await getAllFriends(req.params.id)
         res.send(data)
         
     } catch (error) {
