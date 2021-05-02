@@ -13,7 +13,7 @@ const router = express.Router()
 router.post('/addFriend', async(req, res, next) => {
     try {
         await addFriend(req.body.id1, req.body.id2);
-
+        res.status(200).send("Done")
     } catch (error) {
         res.status(400).send(error);
     }
@@ -30,7 +30,7 @@ router.get('/allFriend_id/:id', async(req, res, next) => {
 router.delete('/unFriend', async(req, res, next) => {
     try {
         await removeFriend(req.body.id1, req.body.id2);
-
+        res.status(200).send("Done")
     } catch (error) {
         res.status(400).send(error);
     }
