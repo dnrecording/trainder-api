@@ -124,12 +124,11 @@ const Match = async function () {
             const person2 = db.collection("userData").doc(ref_pair); // it's ref_pair
             const ref_pair_data = await person2.get();
 
-            if (ref_pair_data.data().ever_met == null) {
-                var met2_list = [ref.id];
-            } else {
-                if (!met2_list.find(ele => ele == ref.id))
-                    var met2_list = [...ref_pair_data.data().ever_met, ref.id];
-            }
+            
+            var met2_list =[]
+            if(ref_pair_data.data().ever_met != null){met2_list.push(...ref_pair_data.data().ever_met)}
+            if(!met2_list.find(ele => ele == ref.id)){met2_list.push(ref.id)}
+            
             let met2 = {
                 ever_met: met2_list,
             };
