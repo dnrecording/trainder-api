@@ -1,5 +1,7 @@
 const express = require('express');
-const  {addCourse , addEvent_toCourse,addEvent_toUser, isTableCollision,addCourseMember,joinCourse}  = require('../controlllers/Course_ctrl');
+const  {addCourse , addEvent_toCourse,addEvent_toUser, 
+    isTableCollision,addCourseMember,joinCourse,
+getMember}  = require('../controlllers/Course_ctrl');
 
 const router = express.Router()
 
@@ -67,7 +69,15 @@ router.post('/joinCourse', async(req, res, next) => {
     }
 })
 
-
+router.get('/getMember/:courseId', async(req, res, next) => {
+    
+    try {
+        data = await getMember(req.params.courseId)
+        res.send(data)
+    } catch (error) {
+        res.status(400).send(error);
+    }
+})
 
 
 module.exports = {
