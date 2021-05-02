@@ -49,7 +49,7 @@ const getLogByUID = async(myId, Friend_UID) => {
             //logs is DocRef
     })
     console.log(DocRef)
-    const Logs = await db.collection("chat-logs").doc(DocRef).collection("logs").get()
+    const Logs = await (await db.collection("chat-logs").doc(DocRef).get()).data().logs
 
     Logs.forEach(log => {
         if (log.data().msg != null) {
@@ -62,16 +62,25 @@ const getLogByUID = async(myId, Friend_UID) => {
 
 
 }
-const saveLog = async(senderId, msg, date) => {
+const saveLog = async(LogRef,senderId, msg, date) => {
 
-    let LogRef = await findLogRef(senderId, recieverId)
-    console.log(LogRef)
-    await db.collection("chat-logs").doc(LogRef).collection("Logs").doc().set({
-        sender: senderId,
+    
+    
+    //const data = new logModel(senderId,msg,date)
+    const data = {
+        sender : senderId,
+        msg :msg,
+        date :date
+    }
+    const Logs = await db.collection("chat-logs").doc(LogRef).get()
+    const oldLog  = await Logs.data().logs
+    var  newLog = []
+    if(oldLog !=null){ newLog.push(...oldLog)}
+    newLog.push(data)
+    console.log(newLog)
+    await db.collection("chat-logs").doc(LogRef).update({logs : newLog})
 
-        msg: msg,
-        date: date
-    })
+
 
     return 'Save Chat Log successfully '
 }
