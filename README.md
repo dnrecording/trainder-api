@@ -6,4 +6,7 @@ SERVE
 firebase emulators:start --only functions
 
 DEPLOY
-firebase deploy
+
+NOW USE EVERA.CLOUD
+
+AUTO DEPLOY WITH JENKINS 🎃 
