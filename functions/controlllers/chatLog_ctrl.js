@@ -130,10 +130,17 @@ const clearNoti = async (myId) => {
     await db.collection("userData").doc(myId).update({ notification: null })
     return 'All notification has been delete'
 }
+const updateAllNoti = async (userId,noti) => {
+    
+   console.log(userId)
+   console.table(noti)
+   await db.collection("userData").doc(userId).update({ notification : noti })
+   return 'All notification has been update'
+}
 
 module.exports = {
     getLogByUID,
     getAllLogs,
     saveLog, saveNoti,
-    getAllNoti, clearNoti
+    getAllNoti, clearNoti, updateAllNoti
 }

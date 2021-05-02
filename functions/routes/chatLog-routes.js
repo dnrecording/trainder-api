@@ -1,5 +1,5 @@
 const express = require('express');
-const { getLogByUID,getAllLogs, saveLog ,saveNoti,getAllNoti,clearNoti} = require('../controlllers/chatLog_ctrl')
+const { getLogByUID,getAllLogs, saveLog ,saveNoti,getAllNoti,clearNoti,updateAllNoti} = require('../controlllers/chatLog_ctrl')
 
 const router = express.Router()
 
@@ -72,6 +72,15 @@ router.get('/getAllNoti/:userId',async (req, res,next) =>{
 router.put('/clearNoti/:userId',async (req, res,next) =>{
     try {
         data =  await clearNoti(req.params.userId)
+        res.send(data)
+    }catch(error){
+        res.status(400).send(error.message)
+    }
+})
+router.put('/updateNoti',async (req, res,next) =>{
+    try {
+      
+        data =  await updateAllNoti(req.body.userId,req.body.notification)
         res.send(data)
     }catch(error){
         res.status(400).send(error.message)
