@@ -1,5 +1,12 @@
-const { admin } = require("./database.js");
-const { express, app, http, io } = require("./websocket.js");
+const {
+    admin
+} = require("./database.js");
+const {
+    express,
+    app,
+    http,
+    io
+} = require("./websocket.js");
 
 const bodyParser = require("body-parser");
 
@@ -23,9 +30,9 @@ app.use(express.json());
 
 app.use("", studentRoutes.routs);
 app.use("", M_userRoutes.routs);
-app.use("",FriendListRoutes.routs);
-app.use("",CourseRoutes.routs);
-app.use("",ChatRoutes.routs);
+app.use("", FriendListRoutes.routs);
+app.use("", CourseRoutes.routs);
+app.use("", ChatRoutes.routs);
 app.get("/", function(req, res) {
     console.log("roots page");
 
@@ -49,16 +56,44 @@ io.on("connection", function(socket) {
         if (Existed) {
             delete sessionClient[Existed];
         }
-        sessionClient[socket.id] = {...data, room: "" };
+        sessionClient[socket.id] = {
+            ...data,
+            room: ""
+        };
         pushToQ(data.uid);
         socket.emit("connected", socket.id);
     });
 
+    socket.on("deliver-info-custom", (data) => {
+        // remove existed user
+        if (!data) return;
+        console.log(`info delivered from ${socket.id} : `);
+        console.log(data);
+        // check by uid
+        let Existed = Object.keys(sessionClient).find(
+            (id) => sessionClient[id].uid == data.uid
+        );
+        if (Existed) {
+            delete sessionClient[Existed];
+        }
+        sessionClient[socket.id] = {
+            ...data,
+            room: ""
+        };
+        socket.emit("connected", socket.id);
+    });
+
     // chat
-    socket.on("chat message", (room, msg) => {
+    socket.on("chat message", (room, msg, date) => {
         console.log("socket by : ", socket.id, "to : " + room + " message: " + msg);
         // ส่งข้อมูลกลับไปหาผู้ส่งมา
-        io.in(room).emit("chat messaged", socket.id, sessionClient[socket.id], msg);
+        io.in(room).emit(
+            "chat messaged",
+            socket.id,
+            sessionClient[socket.id],
+            msg,
+            date
+        );
     });
 
     // vdo_call
@@ -78,12 +113,15 @@ io.on("connection", function(socket) {
 
     socket.on("disconnect", () => {
         console.log(`user ${socket.id} disconnected`);
-        io.to(sessionClient[socket.id].room).emit(
-            "user-leaved-room",
-            socket.id,
-            sessionClient[socket.id]
-        );
-        delete sessionClient[socket.id];
+        if (sessionClient[socket.id]) {
+            io.to(sessionClient[socket.id].room).emit(
+                "user-leaved-room",
+                socket.id,
+                sessionClient[socket.id]
+            );
+
+            delete sessionClient[socket.id];
+        }
     });
 
     socket.on("leave-room", (name) => {
