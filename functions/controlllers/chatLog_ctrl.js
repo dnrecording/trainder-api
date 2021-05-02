@@ -98,9 +98,36 @@ const findLogRef = async(person1, person2) => {
 
 
 }
+const saveNoti = async(userId,senderId, msg, date) => {
+    //const data = new logModel(senderId,msg,date)
+    const data = {
+        sender: senderId,
+        msg: msg,
+        date: date
+    }
+    const user = await db.collection("userData").doc(userId).get()
+    const oldNoti = await user.data().notification
+    var newNoti = []
+    if(oldNoti != null) newNoti.push(...oldNoti)
+    newNoti.push(data)
+    await db.collection("userData").doc(userId).update({notification : newNoti})  
+
+
+
+    return 'Save Notification successfully '
+}
+const getAllNoti = async(myId) => {
+    const user  = await db.collection("userData").doc(myId).get()
+    const Noti = await user.data().notification
+    var allNoti = []
+    Noti.forEach(ele =>{ allNoti.push(ele)})
+    return allNoti
+    
+}
 
 module.exports = {
     getLogByUID,
     getAllLogs,
-    saveLog
+    saveLog,saveNoti,
+    getAllNoti
 }
