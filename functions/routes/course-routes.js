@@ -1,7 +1,6 @@
 const express = require('express');
 const  {addCourse , addEvent_toCourse,addEvent_toUser, 
-    isTableCollision,addCourseMember,joinCourse,
-getMember}  = require('../controlllers/Course_ctrl');
+    isTableCollision,addCourseMember,joinCourse,getCourseData}  = require('../controlllers/Course_ctrl');
 
 const router = express.Router()
 
@@ -69,10 +68,10 @@ router.post('/joinCourse', async(req, res, next) => {
     }
 })
 
-router.get('/getMember/:courseId', async(req, res, next) => {
+router.get('/getCourseData/:courseId', async(req, res, next) => {
     
     try {
-        data = await getMember(req.params.courseId)
+        data = await getCourseData(req.params.courseId)
         res.send(data)
     } catch (error) {
         res.status(400).send(error);

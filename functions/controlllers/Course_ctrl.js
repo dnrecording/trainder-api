@@ -113,9 +113,9 @@ const getEventsfromCourse = async (courseId) => {
 
 
 }
-const getMember= async (courseId) =>{
+const getCourseData= async (courseId) =>{
     
-    var data =  await (await db.collection("Course").doc(courseId).get()).data().member
+    var data =  await (await db.collection("Course").doc(courseId).get()).data()
     if(data ==null) {
         return 'No Member'
     }
@@ -242,5 +242,5 @@ const joinCourse = async(courseId,userId)=>{
 
 }
 module.exports = {
-    addCourse, addEvent_toCourse, addEvent_toUser,isTableCollision, addCourseMember,joinCourse,getMember
+    addCourse, addEvent_toCourse, addEvent_toUser,isTableCollision, addCourseMember,joinCourse,getCourseData
 }
