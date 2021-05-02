@@ -107,7 +107,7 @@ io.on("connection", function(socket) {
         const clients = io.sockets.adapter.rooms.get(name);
         socket.emit("joined", {
             roomName: name,
-            users: [...clients.values()].map((id) => sessionClient[id].name),
+            users: [...clients.values()].map((id) => sessionClient[id]),
         });
     });
 

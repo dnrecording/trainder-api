@@ -61,7 +61,7 @@ function findPaired(ref, list) {
     return maxId;
 }
 
-const Match = async function () {
+const Match = async function() {
     console.log("------------------------------------------");
     console.log("Matching");
     var paired_arr = [];
@@ -124,11 +124,11 @@ const Match = async function () {
             const person2 = db.collection("userData").doc(ref_pair); // it's ref_pair
             const ref_pair_data = await person2.get();
 
-            
-            var met2_list =[]
-            if(ref_pair_data.data().ever_met != null){met2_list.push(...ref_pair_data.data().ever_met)}
-            if(!met2_list.find(ele => ele == ref.id)){met2_list.push(ref.id)}
-            
+
+            var met2_list = []
+            if (ref_pair_data.data().ever_met != null) { met2_list.push(...ref_pair_data.data().ever_met) }
+            if (!met2_list.find(ele => ele == ref.id)) { met2_list.push(ref.id) }
+
             let met2 = {
                 ever_met: met2_list,
             };
@@ -162,9 +162,9 @@ const Match = async function () {
     }
 };
 
-const pushToQ = async (id) => {
+const pushToQ = async(id) => {
     console.log('pushing')
-    //get dataform userData and Post into WaitForMatch collection
+        //get dataform userData and Post into WaitForMatch collection
     const user = await db.collection("userData").doc(id);
     const data = await user.get();
 
@@ -182,14 +182,14 @@ const pushToQ = async (id) => {
 };
 
 
-const findTrainer = async (userId) => {
+const findTrainer = async(userId) => {
 
     let trainers = await getAllTrainers()
 
     let top10 = []
     const user = await db.collection("userData").doc(userId).get()
-    //console.log('All trainers')
-    //console.table(trainers)
+        //console.log('All trainers')
+        //console.table(trainers)
     let met_trainer = []
     if (user.data().met_trainer != null)
         met_trainer.push(...user.data().met_trainer)
@@ -203,26 +203,26 @@ const findTrainer = async (userId) => {
     console.log('Finding Trainer ')
     let lenn = trainers.length
 
-    while(top10.length <10 && top10.length < lenn) {
+    while (top10.length < 10 && top10.length < lenn) {
         console.log('...')
         let trainerId = findPaired(ref, trainers)
 
-        if (!met_trainer.find(ele => ele == trainerId)){
+        if (!met_trainer.find(ele => ele == trainerId)) {
             met_trainer.push(trainerId)
-            
+
         }
         let uid = userIdtoUID(trainerId)
-        if(!top10.find(ele => ele == uid)){
-        top10.push(await userIdtoUID(trainerId))
-        //console.log(trainerId,await userIdtoUID(trainerId))
+        if (!top10.find(ele => ele == uid)) {
+            top10.push(await userIdtoUID(trainerId))
+                //console.log(trainerId,await userIdtoUID(trainerId))
         }
-            
 
-        
+
+
         for (let j = 0; j < trainers.length; j++) {
             if (trainers[j].id == trainerId)
                 trainers.splice(j, 1)
-            //remove who get in queue
+                //remove who get in queue
         }
     }
     //console.table(met_trainer)
@@ -234,15 +234,15 @@ const findTrainer = async (userId) => {
 
 
 }
-const userIdtoUID = async (userId) => {
+const userIdtoUID = async(userId) => {
     const user = await db.collection("userData").doc(userId)
     const data = await user.get()
-    if(data.data().uid==null|| data.data().uid == undefined)
+    if (data.data().uid == null || data.data().uid == undefined)
         console.log('Something Wrong')
     return data.data().uid
 }
 
-const getAllTrainers = async () => {
+const getAllTrainers = async() => {
 
     let trainers = []
     const user_D = await db.collection("userData");
