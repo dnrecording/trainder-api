@@ -26,8 +26,8 @@ const getAllLogs = async(myId) => {
         const Logs = await (await db.collection("chat-logs").doc(docref).get()).data().logs
 
         Logs.forEach(log => {
-            if (log.data().msg != null) {
-                let newLog = new logModel(log.data().sender, log.data().msg, log.data().date)
+            if (log.msg != null) {
+                let newLog = new logModel(log.sender, log.msg, log.date)
                 allLogs.push(newLog)
             }
         })
@@ -52,8 +52,8 @@ const getLogByUID = async(myId, Friend_UID) => {
     const Logs = await (await db.collection("chat-logs").doc(DocRef).get()).data().logs
 
     Logs.forEach(log => {
-        if (log.data().msg != null) {
-            let newLog = new logModel(log.data().sender, log.data().msg, log.data().date)
+        if (log.msg != null) {
+            let newLog = new logModel(log.sender, log.msg, log.date)
             allLogs.push(newLog)
         }
     })
