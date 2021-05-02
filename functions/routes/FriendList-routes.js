@@ -32,6 +32,7 @@ router.delete('/unFriend', async(req, res, next) => {
         await removeFriend(req.body.id1, req.body.id2);
         res.status(200).send("Done")
     } catch (error) {
+        console.log(error)
         res.status(400).send(error);
     }
 })

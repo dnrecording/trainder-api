@@ -47,16 +47,17 @@ const addFriend = async(person1_id, person2_id) => {
         user2_Id: data_2.id,
         user1_uid: data_1.data().uid,
         user2_uid: data_2.data().uid,
-        // It will have collection("logs")
+        logs: []
+            // It will have collection("logs")
     });
-    await db
-        .collection("chat-logs")
-        .doc(log_id)
-        .collection("logs")
-        .doc("Dummy")
-        .set({
-            logModel: "Object",
-        });
+    // await db
+    //     .collection("chat-logs")
+    //     .doc(log_id)
+    //     .collection("logs")
+    //     .doc("Dummy")
+    //     .set({
+    //         logModel: "Object",
+    //     });
 };
 
 const getAllFriend_id = async(myId) => {
