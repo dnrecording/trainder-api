@@ -23,7 +23,7 @@ const getAllLogs = async(myId) => {
     })
     for (const docref of DocRef) {
         if (docref == null || docref == undefined) { continue }
-        const Logs = await db.collection("chat-logs").doc(docref).collection("Logs").get()
+        const Logs = await (await db.collection("chat-logs").doc(docref).get()).data().logs
 
         Logs.forEach(log => {
             if (log.data().msg != null) {
