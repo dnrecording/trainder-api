@@ -28,17 +28,17 @@ router.get('/getLogByUID/:myId_FriendUID', async (req, res, next) => {
         res.status(400).send(error.message)
     }
 })
-router.post('/saveLog',async(req,res,next)=>{
+router.put('/saveLog',async(req,res,next)=>{
     try{
         /*{            
             "sender": "BdB1sFR5JxLA6Ov7FfvY",
-            "reciever": "BLw6bcWzPXvYoNjiZkJA",
+            "LogRef": "dsw6bcWzPXvYoNjA",
             "msg": "So cool Bro",
             "date": "1923-12-12"
             }*/
         console.log("Routes")
         console.log(req.body)
-        data  = await saveLog(req.body.sender,req.body.reciever,req.body.msg,req.body.date)
+        data  = await saveLog(req.body.LogRef,req.body.sender,req.body.msg,req.body.date)
         res.send(data)
 
     }catch(error){
