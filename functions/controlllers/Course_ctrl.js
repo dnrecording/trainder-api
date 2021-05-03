@@ -1,6 +1,7 @@
 'use strict';
 const { admin } = require('../database');
 const { Course, myEvent } = require('../models/Course');
+const { makeid } = require("./misc");
 
 const db = admin.firestore();
 // addCoures and addEvent_toCourse just a prototype
@@ -21,26 +22,45 @@ const addCourse = async(creator_id) => {
 }
 const getEventsfromUser = async(uid) => {
     console.log('Getting all Events')
-
+    console.log(uid)
     let tableRef = await db.collection("Table");
-    let userData = await tableRef.where("uid", "==", uid).get();
+    var userData = await tableRef.where("uid", "==", uid).get();
+    var userDocid
+    if (userData.empty) {
+        console.log('Empty')
+        var docRef = await newTable(uid)
+        console.log(docRef)
 
-    userData.forEach(doc => {
-        this.userDocid = doc.id;
-        //console.log(doc.id, '=>', doc.data());
-    });
+        userData = await tableRef.doc(docRef).get()
+        userDocid = docRef
+        var tt = await userData.data()
+        console.table(tt)
+    } else {
+        console.log('Normal')
+        userData = await tableRef.where("uid", "==", uid).get();
 
-    let userEvent = await tableRef.doc(this.userDocid).collection("Event").get();
+        console.log('ddf')
+        userData.forEach(doc => {
+            console.log('Loop')
+            userDocid = doc.id;
+            //console.log(doc.id, '=>', doc.data());
+        });
+        console.log(userDocid)
+
+    }
+    console.log('Almost')
+    let userEvent = await tableRef.doc(userDocid).collection("Event").get();
     const Events = [];
-
+    console.log('Good')
     userEvent.forEach(doc => {
         if (JSON.stringify(doc.data()) != "{}") {
             let EventData = new myEvent(doc.id, doc.data().name, doc.data().creator, doc.data().start, doc.data().end, doc.data().color, doc.data().details)
-            Events.push(EventData)
+            if (EventData.start != undefined && EventData.start != null)
+                Events.push(EventData)
         }
     });
 
-
+    console.table(Events)
     return Events;
 }
 const uidToUserId = async(uid) => {
@@ -50,6 +70,16 @@ const uidToUserId = async(uid) => {
         userId = doc.id
     })
     return userId
+}
+const newTable = async(uid) => {
+    console.log('Creating new Table')
+    const docRef = await makeid(30)
+    await db.collection("Table").doc(docRef).set({ uid: uid })
+    const event = await db.collection("Table").doc(docRef).collection("Event")
+
+    await event.doc().set({ just: "dummy" })
+    console.log('Create successful')
+    return docRef
 }
 const addEvent_toCourse = async(CourseId, uid) => {
     // copy even from userTable to Course events
@@ -96,16 +126,18 @@ const addEvent_toCourse = async(CourseId, uid) => {
     }
 }
 const getEventsfromCourse = async(courseId) => {
-    console.log('Going in')
+    console.log('Getting Event from Course')
     const course = await db.collection('Course').doc(courseId)
     const courseEvents = await course.collection('Event').get()
 
     let Events = []
     courseEvents.forEach(doc => {
         let EventData = new myEvent(doc.id, doc.data().name, doc.data().creator, doc.data().start, doc.data().end, doc.data().color, doc.data().details)
-        Events.push(EventData)
+        if (EventData.start != undefined && EventData.start != null)
+            Events.push(EventData)
 
     })
+    console.log('Got it ')
 
     return Events
 
@@ -166,10 +198,11 @@ const isTableCollision = async(courseId, userId) => {
     let CourseEvents = await getEventsfromCourse(courseId)
     let UserEvents = await getEventsfromUser(uid)
 
-    // console.log('Course Table')
-    // console.table(CourseEvents)
-    // console.log('User table before Merge')
-    // console.table(UserEvents)
+    console.log('Course Table')
+    console.table(CourseEvents)
+    console.log('User table before Merge')
+    console.table(UserEvents)
+    console.log('Checking Collision')
     if (UserEvents == [] || CourseEvents == []) {
 
         return false
@@ -182,6 +215,7 @@ const isTableCollision = async(courseId, userId) => {
             var newEvent_end = courseEvent.end
             var oldEvent_start = userEvent.start
             var oldEvent_end = userEvent.end
+
 
             if ((newEvent_start >= oldEvent_start && newEvent_start <= oldEvent_end) ||
                 (newEvent_end >= oldEvent_start && newEvent_end <= oldEvent_end) ||
@@ -225,8 +259,13 @@ const joinCourse = async(courseId, userId) => {
     const uid = await userIdtoUID(userId)
 
     if (await isTableCollision(courseId, userId)) {
-        return 'Your schedule is not ready for this course. please re-arrange.'
+        return 'Your schedule is not ready for this course please re ararage'
     }
+    console.log('------No collision')
+    console.log('---adding Event To user')
+    await addEvent_toUser(courseId, uid)
+    console.log('--- Adding member')
+    await addCourseMember(courseId, userId)
 
     await addEvent_toUser(courseId, uid)
     await addCourseMember(courseId, userId)
