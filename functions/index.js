@@ -1,27 +1,22 @@
-const {
-    admin
-} = require("./database.js");
-const {
-    express,
-    app,
-    http,
-    io
-} = require("./websocket.js");
+const { admin } = require("./database.js");
+const { express, app, http, io } = require("./websocket.js");
 
 const bodyParser = require("body-parser");
 
 const cors = require("cors");
 const M_userRoutes = require("./routes/forMathing-routes");
 const studentRoutes = require("./routes/student-routes");
-const FriendListRoutes = require('./routes/FriendList-routes');
-const CourseRoutes = require('./routes/course-routes');
-const ChatRoutes = require('./routes/chatLog-routes');
+const FriendListRoutes = require("./routes/FriendList-routes");
+const CourseRoutes = require("./routes/course-routes");
+const ChatRoutes = require("./routes/chatLog-routes");
 const { ResultStorage } = require("firebase-functions/lib/providers/testLab");
 const { pushToQ } = require("./controlllers/forMathing_ctrl");
 //const { getAllM_user } = require('./controlllers/forMathing_ctrl.js');
 
 var corsOptions = {
     origin: true,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
@@ -58,7 +53,7 @@ io.on("connection", function(socket) {
         }
         sessionClient[socket.id] = {
             ...data,
-            room: ""
+            room: "",
         };
         pushToQ(data.uid);
         socket.emit("connected", socket.id);
@@ -78,7 +73,7 @@ io.on("connection", function(socket) {
         }
         sessionClient[socket.id] = {
             ...data,
-            room: ""
+            room: "",
         };
         socket.emit("connected", socket.id);
     });
