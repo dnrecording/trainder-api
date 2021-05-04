@@ -196,8 +196,12 @@ app.get('/timerStart', async function(req, res) { //this function works when peo
     await myQuery.set({ //record timestamp in the collection as startTime field
         startTime: myTime
     });
-    console.log("success timerStart")
-    res = 'start';
+    //console.log("success timerStart")
+    try {
+        res.status(200).send('started');
+    } catch (error) {
+        res.status(400).send(error);
+    }
 });
 //timer api <stop> /timerStop?uid=<uid>
 app.get('/timerStop', async function(req, res) {
@@ -242,8 +246,12 @@ app.get('/timerStop', async function(req, res) {
             exercise_time : prev_time + totalTimeMin
         })
     }
-    console.log("success timerStop")
-    res ='stop';
+    //console.log("success timerStop")
+    try {
+        res.status(200).send('stoped');
+    } catch (error) {
+        res.status(400).send(error);
+    }
 });
 
 // exports.api = functions.region("asia-east2").https.onRequest(app);
