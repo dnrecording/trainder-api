@@ -14,7 +14,7 @@ const { pushToQ } = require("./controlllers/forMathing_ctrl");
 //const { getAllM_user } = require('./controlllers/forMathing_ctrl.js');
 
 var corsOptions = {
-    origin: true,
+    origin: "*",
     method: ["GET", "POST"],
     //, "HEAD", "PUT", "PATCH", "DELETE"
     //preflightContinue: false,
