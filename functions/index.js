@@ -15,9 +15,10 @@ const { pushToQ } = require("./controlllers/forMathing_ctrl");
 
 var corsOptions = {
     origin: "https://trainder.evera.cloud",
-    method: ["GET", "POST", "HEAD", "PUT", "PATCH", "DELETE"],
-    preflightContinue: false,
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+    method: ["GET", "POST"],
+    //, "HEAD", "PUT", "PATCH", "DELETE"
+    //preflightContinue: false,
+    //optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
 
