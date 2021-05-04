@@ -14,7 +14,7 @@ const { pushToQ } = require("./controlllers/forMathing_ctrl");
 //const { getAllM_user } = require('./controlllers/forMathing_ctrl.js');
 
 var corsOptions = {
-    origin: "*",
+    origin: "https://api.evera.cloud",
     method: ["GET", "POST"],
     //, "HEAD", "PUT", "PATCH", "DELETE"
     //preflightContinue: false,
