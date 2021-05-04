@@ -36,6 +36,15 @@ router.get('/findTrainer/:id', async(req, res, next) => {
         res.status(400).send(error.message);
     }
 })
+router.delete('/dequeue/:docid', async(req, res, next) => {
+    try {
+        
+        const data = await dequeue(req.params.docid);
+        res.status(200).send(data)
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+})
 
 
 module.exports = {
