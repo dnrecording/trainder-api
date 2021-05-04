@@ -20,7 +20,7 @@ router.post("/addFriend", async(req, res, next) => {
 router.get("/allFriend_id/:id", async(req, res, next) => {
     try {
         data = await getAllFriend_id(req.params.id);
-        res.send(data);
+        res.status(200).send(data);
     } catch (error) {
         res.status(400).send(error);
     }
@@ -37,7 +37,7 @@ router.delete("/unFriend", async(req, res, next) => {
 router.get("/allFriend_name/:id", async(req, res, next) => {
     try {
         data = await getFriends_name(req.params.id);
-        res.send(data);
+        res.status(200).send(data);
     } catch (error) {
         res.status(400).send(error);
     }
@@ -46,7 +46,7 @@ router.get("/allFriend_name/:id", async(req, res, next) => {
 router.get("/allFriends/:id", async(req, res, next) => {
     try {
         data = await getAllFriends(req.params.id);
-        res.send(data);
+        res.status(200).send(data);
     } catch (error) {
         console.log(error);
         res.status(400).send(error);
