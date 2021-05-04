@@ -14,10 +14,11 @@ const { pushToQ } = require("./controlllers/forMathing_ctrl");
 //const { getAllM_user } = require('./controlllers/forMathing_ctrl.js');
 
 var corsOptions = {
-    origin: "https://api.evera.cloud",
+    origin: "https://trainder.evera.cloud",
     method: ["GET", "POST"],
     //, "HEAD", "PUT", "PATCH", "DELETE"
     //preflightContinue: false,
+    credentials: true,
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
