@@ -180,7 +180,20 @@ const pushToQ = async(id) => {
         return data.data();
     }
 };
+const dequeue= async (docId) => {
+    console.log('Dequeueing')
+    //get dataform userData and Post into WaitForMatch collection
+ const userInMatch =  await db.collection("WaitForMatch").doc(docId)
+ const data = await userInMatch.get()
 
+    if (!data.exists) {
+        return  "user with the given ID not in Queue";
+    } else {
+        await userInMatch.delete()
+       
+        return "Dequeue complete"
+    }
+}
 
 const findTrainer = async(userId) => {
 
@@ -294,5 +307,6 @@ const getAllTrainers = async() => {
 module.exports = {
     Match,
     pushToQ,
-    findTrainer
+    findTrainer,
+    dequeue
 };
