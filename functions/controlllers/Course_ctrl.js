@@ -73,13 +73,17 @@ const uidToUserId = async(uid) => {
 }
 const newTable = async(uid) => {
     console.log('Creating new Table')
-    const docRef = await makeid(30)
-    await db.collection("Table").doc(docRef).set({ uid: uid })
-    const event = await db.collection("Table").doc(docRef).collection("Event")
+        // const docRef = await makeid(30)
+        // await db.collection("Table").doc(docRef).set({ uid: uid })
+        // const event = await db.collection("Table").doc(docRef).collection("Event")
 
-    await event.doc().set({ just: "dummy" })
-    console.log('Create successful')
-    return docRef
+    // await event.doc().set({ just: "dummy" })
+    // console.log('Create successful')
+    // return docRef
+    const doc = await db.collection("Table").add({ uid: uid })
+        // const event = await db.collection("Table").doc(doc.id).collection("Event").add({ just: dummy })
+    return doc.id
+
 }
 const addEvent_toCourse = async(CourseId, uid) => {
     // copy even from userTable to Course events
@@ -138,11 +142,7 @@ const getEventsfromCourse = async(courseId) => {
 
     })
     console.log('Got it ')
-
     return Events
-
-
-
 }
 const getCourseData = async(courseId) => {
 
@@ -229,13 +229,8 @@ const isTableCollision = async(courseId, userId) => {
 
         }
 
-
-
-
     }
     return false
-
-
 
 }
 const userIdtoUID = async(userId) => {
@@ -250,7 +245,7 @@ const addCourseMember = async(courseId, userId) => {
     if (course_data.data().member != null) {
         member.push(...course_data.data().member)
     }
-    member.push(userId)
+    if (!member.includes(userId)) member.push(userId)
     await course.update({ member: member })
 }
 

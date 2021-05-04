@@ -142,6 +142,7 @@ const saveNoti = async(userId, senderId, msg, date, type) => {
     var newNoti = [];
     if (oldNoti != null) newNoti.push(...oldNoti);
     newNoti.push(data);
+    console.log(newNoti)
     await db.collection("userData").doc(userId).update({
         notification: newNoti,
     });

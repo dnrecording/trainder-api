@@ -58,6 +58,7 @@ router.put('/pushNoti', async(req, res, next) => {
         res.send(data)
 
     } catch (error) {
+        console.log(error)
         res.status(400).send(error.message)
     }
 })
