@@ -215,6 +215,7 @@ app.get('/timerStop', async function(req, res) {
         startTime: 0
     })
     let totalTimeMin = parseFloat(totalTime / 60); //minute of exercised
+    totalTimeMin = Math.round(totalTimeMin*10)/10;
     //year-month-date with 0 if 1 digit << must
     let myStatDate = getStatDate(); //get Date now in stat format
     myQuery = db.collection('userStats').doc(myuid); //query doc
