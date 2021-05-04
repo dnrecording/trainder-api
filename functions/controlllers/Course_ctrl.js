@@ -257,7 +257,7 @@ const addCourseMember = async (courseId, userId) => {
     if (course_data.data().member != null) {
         member.push(...course_data.data().member)
     }
-    member.push(userId)
+    if(!member.includes(userId)) member.push(userId)
     await course.update({ member: member })
 
 
