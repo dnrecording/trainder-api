@@ -21,7 +21,7 @@ const { pushToQ } = require("./controlllers/forMathing_ctrl");
 //const { getAllM_user } = require('./controlllers/forMathing_ctrl.js');
 
 var corsOptions = {
-    origin: "*",
+    origin: true,
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
