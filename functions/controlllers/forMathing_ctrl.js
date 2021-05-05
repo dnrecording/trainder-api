@@ -68,7 +68,7 @@ const Match = async function () {
     //get data form database collection waitForMatch keep in User_Array
     const users = await db.collection("WaitForMatch");
     const data = await users.get();
-    const User_Array = [];
+    var User_Array = [];
     if (data.empty) {
         throw "userData collection on database is empty"
     } else {
@@ -98,15 +98,35 @@ const Match = async function () {
         });
 
         while (User_Array.length > 1) {
+            let nowQ = InQ()
+
             //Paring
             let ref = User_Array.shift();
-
+            var normal = True
             let ref_pair = findPaired(ref, User_Array);
 
             let this_pair = new Paired(ref.id, ref_pair);
+            if (!nowQ.includes(ref.id)) {
+                var t = await getU(ref_pair)
+                User_Array.push(t)
+                User_Array = User_Array.filter(ele=>{
+                    ele.id != ref.id
+                })
+                normal = False
+            }
+            if (!nowQ.includes(ref_pair)) {
+                var t = await getU(ref.id)
+                User_Array.push(t)
+                User_Array = User_Array.filter(ele=>{
+                    ele.id != ref_pair
+                })
+                normal = False
+            }
             // remove ones that got matched form database in WaitForMatch Collection
+            if(normal){
             await db.collection("WaitForMatch").doc(ref.id).delete();
             await db.collection("WaitForMatch").doc(ref_pair).delete();
+            }else continue
 
             // update that these user ever met each other.
             // it works two way.
@@ -124,11 +144,11 @@ const Match = async function () {
             const person2 = db.collection("userData").doc(ref_pair); // it's ref_pair
             const ref_pair_data = await person2.get();
 
-            
-            var met2_list =[]
-            if(ref_pair_data.data().ever_met != null){met2_list.push(...ref_pair_data.data().ever_met)}
-            if(!met2_list.find(ele => ele == ref.id)){met2_list.push(ref.id)}
-            
+
+            var met2_list = []
+            if (ref_pair_data.data().ever_met != null) { met2_list.push(...ref_pair_data.data().ever_met) }
+            if (!met2_list.find(ele => ele == ref.id)) { met2_list.push(ref.id) }
+
             let met2 = {
                 ever_met: met2_list,
             };
@@ -180,20 +200,20 @@ const pushToQ = async (id) => {
         return data.data();
     }
 };
-const dequeue= async (docId) => {
+const dequeue = async (docId) => {
     console.log('Dequeueing')
     //get dataform userData and Post into WaitForMatch collection
- const userInMatch =  await db.collection("WaitForMatch").doc(docId)
- const data = await userInMatch.get()
+    const userInMatch = await db.collection("WaitForMatch").doc(docId)
+    const data = await userInMatch.get()
 
     if (!data.exists) {
-        return  "user with the given ID not in Queue";
+        return "user with the given ID not in Queue";
     } else {
         await userInMatch.delete()
-       
+
         return "Dequeue complete"
     }
-}
+};
 
 const findTrainer = async (userId) => {
 
@@ -216,22 +236,22 @@ const findTrainer = async (userId) => {
     console.log('Finding Trainer ')
     let lenn = trainers.length
 
-    while(top10.length <10 && top10.length < lenn) {
+    while (top10.length < 10 && top10.length < lenn) {
         console.log('...')
         let trainerId = findPaired(ref, trainers)
 
-        if (!met_trainer.find(ele => ele == trainerId)){
+        if (!met_trainer.find(ele => ele == trainerId)) {
             met_trainer.push(trainerId)
-            
+
         }
         let uid = userIdtoUID(trainerId)
-        if(!top10.find(ele => ele == uid)){
-        top10.push(await userIdtoUID(trainerId))
-        //console.log(trainerId,await userIdtoUID(trainerId))
+        if (!top10.find(ele => ele == uid)) {
+            top10.push(await userIdtoUID(trainerId))
+            //console.log(trainerId,await userIdtoUID(trainerId))
         }
-            
 
-        
+
+
         for (let j = 0; j < trainers.length; j++) {
             if (trainers[j].id == trainerId)
                 trainers.splice(j, 1)
@@ -246,14 +266,14 @@ const findTrainer = async (userId) => {
     return top10
 
 
-}
+};
 const userIdtoUID = async (userId) => {
     const user = await db.collection("userData").doc(userId)
     const data = await user.get()
-    if(data.data().uid==null|| data.data().uid == undefined)
+    if (data.data().uid == null || data.data().uid == undefined)
         console.log('Something Wrong')
     return data.data().uid
-}
+};
 
 const getAllTrainers = async () => {
 
@@ -296,17 +316,67 @@ const getAllTrainers = async () => {
 
 
 }
+const getU = async (id) => {
+    const user = await db.collection("WaitForMatch").doc(id);
+    const doc = await user.get();
 
+    if (doc.data().ever_met == null) {
+        var met_list = [];
+    } else {
+        var met_list = doc.data().ever_met;
+    }
+    return new M_user(
+        doc.id,
+        doc.data().EC_skill,
+        doc.data().Purpose,
+        doc.data().Birthday,
+        met_list
+    );
 
-
-
-
-
-
-
-module.exports = {
-    Match,
-    pushToQ,
-    findTrainer,
-    dequeue
 };
+const InQ = async () => {
+    const users = await db.collection("WaitForMatch");
+    const data = await users.get();
+    const User_Array = [];
+    if (data.empty) {
+        throw "userData collection on database is empty"
+    } else {
+        data.forEach((doc) => {
+            if (doc.data().ever_met == null) {
+                var met_list = [];
+            } else {
+                var met_list = doc.data().ever_met;
+            }
+            const user = new M_user(
+                doc.id,
+                doc.data().EC_skill,
+                doc.data().Purpose,
+                doc.data().Birthday,
+                met_list
+            );
+            if (
+                user.genre == null ||
+                user.purpose == null ||
+                user.birth_day == null
+            ) {
+                db.collection("WaitForMatch").doc(user.id).delete();
+                console.log(
+                    "Invalid  information for matching form user Id :" + user.id
+                );
+            } else User_Array.push(doc.id);
+        });
+
+        return User_Array
+    };
+
+
+}
+
+
+
+
+
+
+    module.exports = {
+       Match,pushToQ,findTrainer,dequeue
+    };
